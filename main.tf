@@ -11,6 +11,11 @@ resource "github_repository" "repo" {
   has_projects     = true
   has_wiki         = false
   auto_init        = false
+  template {
+    include_all_branches = false
+    owner                = "Practical-DevOps-GitHub"
+    repository           = "github-terraform-task"
+  }
 }
 
 resource "github_repository_collaborator" "collaborator" {
@@ -94,14 +99,14 @@ EOT
 }
 
 resource "github_repository_deploy_key" "DEPLOY_KEY" {
-  repository = "repo"
+  repository = github_repository.repo.name
   key        = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK05bzRYpUOVKdp+jMs7/IATIdR87fCT3NBAMeu6Vw3C as example"
   title      = "DEPLOY_KEY"
   read_only  = true
 }
 
 resource "github_actions_secret" "PAT" {
-  repository       = "repo"
+  repository = github_repository.repo.name
   secret_name      = "PAT"
-  encrypted_value  = "ghp_..."
+  plaintext_value  = "ghp_..."
 }
